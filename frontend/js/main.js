@@ -193,7 +193,7 @@ function filterPosts(posts) {
 
 function loadPosts() {
     // バックエンドが作成する posts.json からデータを読み込む
-    fetch('http://127.0.0.1:8000/api/posts')
+    fetch('http://127.0.0.1:8000/api/posts') // ←FastAPI
         .then(response => response.json())
         .then(allPosts => {
             // フィルタリング
@@ -226,10 +226,20 @@ function displayPosts(posts) {
     });
 }
 
-//function createPostCard(post) {
-    // 投稿カードのHTML要素を動的に生成
-    // バックエンド担当が実装予定
-//}
+function createPostCard(post) {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.innerHTML = `
+        <h3 class="post-title">${post.title}</h3>
+        <p class="post-content">${post.content}</p>
+        <div class="post-meta">
+            <span>🌏 ${post.country_region}</span>
+            <span>💼 ${post.industry_job}</span>
+            <span>📋 ${post.knowledge_type}</span>
+        </div>
+    `;
+    return card;
+}
 
 
 // ==================== ソート変更 ====================
