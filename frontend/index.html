@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海外転職ナレッジ - 投稿一覧</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🌏</span>
+                <span class="logo-text">海外転職ナレッジ</span>
+            </div>
+            <nav class="user-menu">
+                <button class="btn btn-secondary" onclick="location.href='index.html'">ホーム</button>
+                <button class="btn btn-primary" onclick="location.href='settings.html'">設定</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="container">
+        <!-- フィルター状態表示 -->
+        <section class="filter-status">
+            <div class="filter-status-content">
+                <div class="filter-status-text">
+                    <span class="filter-status-icon">🔍</span>
+                    <span id="filter-status-message">すべての投稿を表示中</span>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="location.href='settings.html'">
+                    フィルターを変更
+                </button>
+            </div>
+            <!-- 選択中のフィルタータグ表示 -->
+            <div class="active-filters" id="active-filters"></div>
+        </section>
+
+        <!-- 投稿リスト -->
+        <section class="posts-section">
+            <div class="posts-header">
+                <h2 class="posts-title">投稿一覧</h2>
+                <div class="posts-sort">
+                    <select class="sort-select" id="sort-select">
+                        <option value="latest">新着順</option>
+                        <option value="popular">人気順</option>
+                        <option value="oldest">古い順</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 投稿カードが表示される場所（バックエンドが投稿データを読み込んで表示） -->
+            <div class="posts-list" id="posts-list">
+                <div class="loading">投稿を読み込んでいます...</div>
+            </div>
+
+            <!-- 投稿がない場合 -->
+            <div class="no-posts" id="no-posts" style="display: none;">
+                <p>😔 条件に合う投稿が見つかりませんでした。</p>
+                <p>フィルター条件を変更してみてください。</p>
+                <button class="btn btn-primary" onclick="location.href='settings.html'" style="margin-top: 1rem;">
+                    フィルター設定を変更
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- 新規投稿ボタン（フローティング） -->
+    <button class="fab-button" id="new-post-btn" title="新規投稿">
+        <span class="fab-icon">+</span>
+    </button>
+
+    <!-- JavaScript読み込み -->
+    <script src="js/main.js"></script>
+</body>
+</html>

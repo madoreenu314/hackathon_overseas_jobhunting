@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アカウント設定 - 海外転職ナレッジ</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🌏</span>
+                <span class="logo-text">海外転職ナレッジ</span>
+            </div>
+            <nav class="user-menu">
+                <button class="btn btn-secondary" onclick="location.href='index.html'">ホームに戻る</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="container">
+        <!-- ページタイトル -->
+        <section class="page-title">
+            <h1>⚙️ アカウント設定</h1>
+            <p class="page-subtitle">表示する投稿のフィルター条件を設定できます</p>
+        </section>
+
+        <!-- フィルター設定パネル -->
+        <section class="settings-panel">
+            <h2 class="settings-title">
+                <span class="settings-icon">🔍</span>
+                表示フィルター設定
+            </h2>
+            
+            <div class="filter-grid">
+                <!-- 国・地域フィルター -->
+                <div class="filter-group">
+                    <label class="filter-label">国・地域</label>
+                    <div class="tag-container" id="country-tags">
+                        <button class="tag" data-filter="country" data-value="usa">アメリカ</button>
+                        <button class="tag" data-filter="country" data-value="singapore">シンガポール</button>
+                        <button class="tag" data-filter="country" data-value="uk">イギリス</button>
+                        <button class="tag" data-filter="country" data-value="canada">カナダ</button>
+                        <button class="tag" data-filter="country" data-value="australia">オーストラリア</button>
+                        <button class="tag" data-filter="country" data-value="germany">ドイツ</button>
+                        <button class="tag" data-filter="country" data-value="france">フランス</button>
+                        <button class="tag" data-filter="country" data-value="netherlands">オランダ</button>
+                    </div>
+                </div>
+
+                <!-- 知見の種類フィルター -->
+                <div class="filter-group">
+                    <label class="filter-label">知見の種類</label>
+                    <div class="tag-container" id="type-tags">
+                        <button class="tag" data-filter="type" data-value="housing">🏠 住居</button>
+                        <button class="tag" data-filter="type" data-value="job">💼 職業</button>
+                        <button class="tag" data-filter="type" data-value="visa">📋 ビザ</button>
+                        <button class="tag" data-filter="type" data-value="cost">💰 生活コスト</button>
+                        <button class="tag" data-filter="type" data-value="culture">🎭 文化</button>
+                        <button class="tag" data-filter="type" data-value="education">🎓 教育</button>
+                    </div>
+                </div>
+
+                <!-- 業界・職種フィルター -->
+                <div class="filter-group">
+                    <label class="filter-label">業界・職種</label>
+                    <div class="tag-container" id="industry-tags">
+                        <button class="tag" data-filter="industry" data-value="it">💻 IT・エンジニア</button>
+                        <button class="tag" data-filter="industry" data-value="finance">💹 金融</button>
+                        <button class="tag" data-filter="industry" data-value="consulting">📊 コンサル</button>
+                        <button class="tag" data-filter="industry" data-value="marketing">📱 マーケティング</button>
+                        <button class="tag" data-filter="industry" data-value="medical">⚕️ 医療</button>
+                        <button class="tag" data-filter="industry" data-value="education">👨‍🏫 教育</button>
+                        <button class="tag" data-filter="industry" data-value="manufacturing">🏭 製造業</button>
+                        <button class="tag" data-filter="industry" data-value="retail">🛍️ 小売</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="filter-actions">
+                <button class="btn btn-reset" id="reset-filters">フィルターをリセット</button>
+                <span class="filter-count" id="filter-count">選択中: 0件</span>
+            </div>
+        </section>
+
+        <!-- 保存ボタンエリア -->
+        <section class="save-section">
+            <div class="save-buttons">
+                <button class="btn btn-secondary btn-lg" onclick="location.href='index.html'">
+                    キャンセル
+                </button>
+                <button class="btn btn-primary btn-lg" id="save-filters">
+                    ✓ 保存して投稿一覧へ
+                </button>
+            </div>
+            <p class="save-hint">※ フィルター設定は自動で保存されます</p>
+        </section>
+
+        <!-- その他の設定（将来の拡張用） -->
+        <section class="settings-panel" style="margin-top: 2rem;">
+            <h2 class="settings-title">
+                <span class="settings-icon">👤</span>
+                その他の設定
+            </h2>
+            <div class="other-settings">
+                <p style="color: #888; text-align: center; padding: 2rem;">
+                    その他の設定項目はDay 2で追加予定
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript読み込み -->
+    <script src="js/filter.js"></script>
+</body>
+</html>

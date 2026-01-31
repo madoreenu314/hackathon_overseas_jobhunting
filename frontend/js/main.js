@@ -1,0 +1,248 @@
+// ==================== 投稿一覧ページ用 JavaScript ====================
+
+// フィルター状態を管理
+let currentFilters = {
+    country: [],
+    type: [],
+    industry: []
+};
+
+// ==================== 初期化 ====================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 投稿一覧ページ起動');
+    
+    // フィルター状態を読み込み
+    loadFiltersFromStorage();
+    
+    // フィルター状態を表示
+    displayFilterStatus();
+    
+    // 投稿データを読み込んで表示（バックエンド担当が実装）
+    // loadPosts();
+    
+    // イベントリスナー設定
+    setupEventListeners();
+    
+    console.log('✅ 初期化完了');
+});
+
+// ==================== イベントリスナー設定 ====================
+function setupEventListeners() {
+    // FABボタン（新規投稿）
+    const fabButton = document.getElementById('new-post-btn');
+    if (fabButton) {
+        fabButton.addEventListener('click', function() {
+            console.log('📝 新規投稿ボタンがクリックされました');
+            alert('新規投稿フォームはDay 2で実装予定です！');
+        });
+    }
+    
+    // ソート変更
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', handleSortChange);
+    }
+}
+
+// ==================== フィルター読み込み ====================
+function loadFiltersFromStorage() {
+    const saved = localStorage.getItem('overseasJobFilters');
+    
+    if (!saved) {
+        console.log('📭 保存されたフィルターなし');
+        return;
+    }
+    
+    try {
+        const data = JSON.parse(saved);
+        currentFilters = {
+            country: data.country || [],
+            type: data.type || [],
+            industry: data.industry || []
+        };
+        console.log('📬 フィルター状態を復元:', currentFilters);
+    } catch (error) {
+        console.error('❌ フィルター読み込みエラー:', error);
+    }
+}
+
+// ==================== フィルター状態表示 ====================
+function displayFilterStatus() {
+    const messageElement = document.getElementById('filter-status-message');
+    const activeFiltersContainer = document.getElementById('active-filters');
+    
+    const totalFilters = currentFilters.country.length + 
+                        currentFilters.type.length + 
+                        currentFilters.industry.length;
+    
+    if (totalFilters === 0) {
+        // フィルターなし
+        if (messageElement) {
+            messageElement.textContent = 'すべての投稿を表示中';
+        }
+        if (activeFiltersContainer) {
+            activeFiltersContainer.innerHTML = '';
+        }
+        console.log('🔓 フィルターなし - すべて表示');
+    } else {
+        // フィルターあり
+        if (messageElement) {
+            messageElement.textContent = `${totalFilters}件のフィルターで絞り込み中`;
+        }
+        
+        // 選択中のフィルタータグを表示
+        if (activeFiltersContainer) {
+            displayActiveFilterTags(activeFiltersContainer);
+        }
+        console.log(`🔒 ${totalFilters}件のフィルターで絞り込み`);
+    }
+}
+
+// ==================== 選択中フィルタータグ表示 ====================
+function displayActiveFilterTags(container) {
+    container.innerHTML = '';
+    
+    // 国・地域のラベルマッピング
+    const countryLabels = {
+        'usa': '🇺🇸 アメリカ',
+        'singapore': '🇸🇬 シンガポール',
+        'uk': '🇬🇧 イギリス',
+        'canada': '🇨🇦 カナダ',
+        'australia': '🇦🇺 オーストラリア',
+        'germany': '🇩🇪 ドイツ',
+        'france': '🇫🇷 フランス',
+        'netherlands': '🇳🇱 オランダ'
+    };
+    
+    // 知見の種類のラベルマッピング
+    const typeLabels = {
+        'housing': '🏠 住居',
+        'job': '💼 職業',
+        'visa': '📋 ビザ',
+        'cost': '💰 生活コスト',
+        'culture': '🎭 文化',
+        'education': '🎓 教育'
+    };
+    
+    // 業界・職種のラベルマッピング
+    const industryLabels = {
+        'it': '💻 IT・エンジニア',
+        'finance': '💹 金融',
+        'consulting': '📊 コンサル',
+        'marketing': '📱 マーケティング',
+        'medical': '⚕️ 医療',
+        'education': '👨‍🏫 教育',
+        'manufacturing': '🏭 製造業',
+        'retail': '🛍️ 小売'
+    };
+    
+    // 国・地域タグ
+    currentFilters.country.forEach(value => {
+        const tag = document.createElement('span');
+        tag.className = 'active-filter-tag';
+        tag.textContent = countryLabels[value] || value;
+        container.appendChild(tag);
+    });
+    
+    // 知見の種類タグ
+    currentFilters.type.forEach(value => {
+        const tag = document.createElement('span');
+        tag.className = 'active-filter-tag';
+        tag.textContent = typeLabels[value] || value;
+        container.appendChild(tag);
+    });
+    
+    // 業界・職種タグ
+    currentFilters.industry.forEach(value => {
+        const tag = document.createElement('span');
+        tag.className = 'active-filter-tag';
+        tag.textContent = industryLabels[value] || value;
+        container.appendChild(tag);
+    });
+}
+
+// ==================== 投稿フィルタリング（バックエンドと連携） ====================
+function filterPosts(posts) {
+    // フィルターが設定されていない場合はすべて表示
+    if (currentFilters.country.length === 0 && 
+        currentFilters.type.length === 0 && 
+        currentFilters.industry.length === 0) {
+        return posts;
+    }
+    
+    // フィルター条件に合う投稿のみ返す
+    return posts.filter(post => {
+        const matchCountry = currentFilters.country.length === 0 || 
+                           currentFilters.country.includes(post.country);
+        const matchType = currentFilters.type.length === 0 || 
+                         currentFilters.type.includes(post.type);
+        const matchIndustry = currentFilters.industry.length === 0 || 
+                             currentFilters.industry.includes(post.industry);
+        
+        // すべての条件に合致する投稿のみ
+        return matchCountry && matchType && matchIndustry;
+    });
+}
+
+// ==================== 投稿表示（バックエンド担当が実装予定） ====================
+/*
+function loadPosts() {
+    // バックエンドが作成する posts.json からデータを読み込む
+    fetch('data/posts.json')
+        .then(response => response.json())
+        .then(allPosts => {
+            // フィルタリング
+            const filteredPosts = filterPosts(allPosts);
+            
+            // 表示
+            displayPosts(filteredPosts);
+        })
+        .catch(error => {
+            console.error('投稿読み込みエラー:', error);
+        });
+}
+
+function displayPosts(posts) {
+    const postsContainer = document.getElementById('posts-list');
+    const noPostsElement = document.getElementById('no-posts');
+    
+    if (posts.length === 0) {
+        postsContainer.innerHTML = '';
+        noPostsElement.style.display = 'block';
+        return;
+    }
+    
+    noPostsElement.style.display = 'none';
+    postsContainer.innerHTML = '';
+    
+    posts.forEach(post => {
+        const postCard = createPostCard(post);
+        postsContainer.appendChild(postCard);
+    });
+}
+
+function createPostCard(post) {
+    // 投稿カードのHTML要素を動的に生成
+    // バックエンド担当が実装予定
+}
+*/
+
+// ==================== ソート変更 ====================
+function handleSortChange(event) {
+    const sortType = event.target.value;
+    console.log(`🔀 ソート変更: ${sortType}`);
+    
+    // 実装予定：
+    // - latest: 新着順
+    // - popular: 人気順（いいね数）
+    // - oldest: 古い順
+}
+
+// ==================== エクスポート（グローバル） ====================
+window.getCurrentFilters = function() {
+    return currentFilters;
+};
+
+window.filterPosts = filterPosts;
+
+console.log('🎉 main.js 読み込み完了');
