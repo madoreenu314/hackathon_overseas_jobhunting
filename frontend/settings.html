@@ -25,21 +25,22 @@
         <!-- ページタイトル -->
         <section class="page-title">
             <h1>⚙️ アカウント設定</h1>
-            <p class="page-subtitle">表示する投稿のフィルター条件を設定できます</p>
+            <p class="page-subtitle">表示したい投稿と、投稿時のデフォルト設定を管理できます</p>
         </section>
 
-        <!-- フィルター設定パネル -->
+        <!-- ========== 見たい投稿のフィルター（複数選択） ========== -->
         <section class="settings-panel">
             <h2 class="settings-title">
                 <span class="settings-icon">🔍</span>
-                表示フィルター設定
+                見たい投稿のフィルター設定
             </h2>
+            <p class="settings-description">投稿一覧に表示したい投稿の条件を選択してください（複数選択可）</p>
             
             <div class="filter-grid">
                 <!-- 国・地域フィルター -->
                 <div class="filter-group">
                     <label class="filter-label">国・地域</label>
-                    <div class="tag-container" id="country-tags">
+                    <div class="tag-container" id="view-country-tags">
                         <button class="tag" data-filter="country" data-value="usa">アメリカ</button>
                         <button class="tag" data-filter="country" data-value="singapore">シンガポール</button>
                         <button class="tag" data-filter="country" data-value="uk">イギリス</button>
@@ -54,7 +55,7 @@
                 <!-- 知見の種類フィルター -->
                 <div class="filter-group">
                     <label class="filter-label">知見の種類</label>
-                    <div class="tag-container" id="type-tags">
+                    <div class="tag-container" id="view-type-tags">
                         <button class="tag" data-filter="type" data-value="housing">🏠 住居</button>
                         <button class="tag" data-filter="type" data-value="job">💼 職業</button>
                         <button class="tag" data-filter="type" data-value="visa">📋 ビザ</button>
@@ -67,7 +68,7 @@
                 <!-- 業界・職種フィルター -->
                 <div class="filter-group">
                     <label class="filter-label">業界・職種</label>
-                    <div class="tag-container" id="industry-tags">
+                    <div class="tag-container" id="view-industry-tags">
                         <button class="tag" data-filter="industry" data-value="it">💻 IT・エンジニア</button>
                         <button class="tag" data-filter="industry" data-value="finance">💹 金融</button>
                         <button class="tag" data-filter="industry" data-value="consulting">📊 コンサル</button>
@@ -82,8 +83,148 @@
 
             <!-- アクションボタン -->
             <div class="filter-actions">
-                <button class="btn btn-reset" id="reset-filters">フィルターをリセット</button>
-                <span class="filter-count" id="filter-count">選択中: 0件</span>
+                <button class="btn btn-reset" id="reset-view-filters">表示フィルターをリセット</button>
+                <span class="filter-count" id="view-filter-count">選択中: 0件</span>
+            </div>
+        </section>
+
+        <!-- ========== 投稿時のデフォルト設定（単一選択） ========== -->
+        <section class="settings-panel">
+            <h2 class="settings-title">
+                <span class="settings-icon">✍️</span>
+                投稿時のデフォルト設定
+            </h2>
+            <p class="settings-description">新規投稿時に自動で選択される項目を設定してください（各カテゴリ1つずつ）</p>
+            
+            <div class="filter-grid">
+                <!-- 国・地域（ラジオボタン） -->
+                <div class="filter-group">
+                    <label class="filter-label">国・地域</label>
+                    <div class="radio-container" id="post-country-radios">
+                        <label class="radio-option">
+                            <input type="radio" name="post-country" value="usa">
+                            <span class="radio-label">アメリカ</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-country" value="singapore">
+                            <span class="radio-label">シンガポール</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-country" value="uk">
+                            <span class="radio-label">イギリス</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-country" value="canada">
+                            <span class="radio-label">カナダ</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-country" value="australia">
+                            <span class="radio-label">オーストラリア</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-country" value="germany">
+                            <span class="radio-label">ドイツ</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-country" value="france">
+                            <span class="radio-label">フランス</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-country" value="netherlands">
+                            <span class="radio-label">オランダ</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-country" value="">
+                            <span class="radio-label">未設定</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 知見の種類（ラジオボタン） -->
+                 <!--
+                <div class="filter-group">
+                    <label class="filter-label">知見の種類</label>
+                    <div class="radio-container" id="post-type-radios">
+                        <label class="radio-option">
+                            <input type="radio" name="post-type" value="housing">
+                            <span class="radio-label">🏠 住居</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-type" value="job">
+                            <span class="radio-label">💼 職業</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-type" value="visa">
+                            <span class="radio-label">📋 ビザ</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-type" value="cost">
+                            <span class="radio-label">💰 生活コスト</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-type" value="culture">
+                            <span class="radio-label">🎭 文化</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-type" value="education">
+                            <span class="radio-label">🎓 教育</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-type" value="">
+                            <span class="radio-label">未設定</span>
+                        </label>
+                    </div>
+                </div>
+                -->
+
+                <!-- 業界・職種（ラジオボタン） -->
+                <div class="filter-group">
+                    <label class="filter-label">業界・職種</label>
+                    <div class="radio-container" id="post-industry-radios">
+                        <label class="radio-option">
+                            <input type="radio" name="post-industry" value="it">
+                            <span class="radio-label">💻 IT・エンジニア</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-industry" value="finance">
+                            <span class="radio-label">💹 金融</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-industry" value="consulting">
+                            <span class="radio-label">📊 コンサル</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-industry" value="marketing">
+                            <span class="radio-label">📱 マーケティング</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-industry" value="medical">
+                            <span class="radio-label">⚕️ 医療</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-industry" value="education">
+                            <span class="radio-label">👨‍🏫 教育</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-industry" value="manufacturing">
+                            <span class="radio-label">🏭 製造業</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-industry" value="retail">
+                            <span class="radio-label">🛍️ 小売</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="post-industry" value="">
+                            <span class="radio-label">未設定</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="filter-actions">
+                <button class="btn btn-reset" id="reset-post-defaults">デフォルト設定をリセット</button>
+                <span class="filter-count" id="post-defaults-status">未設定</span>
             </div>
         </section>
 
@@ -93,28 +234,15 @@
                 <button class="btn btn-secondary btn-lg" onclick="location.href='index.html'">
                     キャンセル
                 </button>
-                <button class="btn btn-primary btn-lg" id="save-filters">
+                <button class="btn btn-primary btn-lg" id="save-settings">
                     ✓ 保存して投稿一覧へ
                 </button>
             </div>
-            <p class="save-hint">※ フィルター設定は自動で保存されます</p>
-        </section>
-
-        <!-- その他の設定（将来の拡張用） -->
-        <section class="settings-panel" style="margin-top: 2rem;">
-            <h2 class="settings-title">
-                <span class="settings-icon">👤</span>
-                その他の設定
-            </h2>
-            <div class="other-settings">
-                <p style="color: #888; text-align: center; padding: 2rem;">
-                    その他の設定項目はDay 2で追加予定
-                </p>
-            </div>
+            <p class="save-hint">※ 設定は自動で保存されます</p>
         </section>
     </main>
 
     <!-- JavaScript読み込み -->
-    <script src="js/filter.js"></script>
+    <script src="js/settings.js"></script>
 </body>
 </html>

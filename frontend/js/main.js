@@ -46,7 +46,7 @@ function setupEventListeners() {
 
 // ==================== フィルター読み込み ====================
 function loadFiltersFromStorage() {
-    const saved = localStorage.getItem('overseasJobFilters');
+    const saved = localStorage.getItem('overseasJobSettings');
     
     if (!saved) {
         console.log('📭 保存されたフィルターなし');
@@ -55,11 +55,16 @@ function loadFiltersFromStorage() {
     
     try {
         const data = JSON.parse(saved);
-        currentFilters = {
-            country: data.country || [],
-            type: data.type || [],
-            industry: data.industry || []
-        };
+        
+        // 新しい形式: viewFilters を使用
+        if (data.viewFilters) {
+            currentFilters = {
+                country: data.viewFilters.country || [],
+                type: data.viewFilters.type || [],
+                industry: data.viewFilters.industry || []
+            };
+        }
+        
         console.log('📬 フィルター状態を復元:', currentFilters);
     } catch (error) {
         console.error('❌ フィルター読み込みエラー:', error);
