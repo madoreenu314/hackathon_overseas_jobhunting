@@ -4,10 +4,20 @@ from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
 from app.routers.posts import router as posts_router
 
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI(title="Hackathon API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 开发中可以全放开
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(posts_router)
+
