@@ -11,6 +11,9 @@ let currentFilters = {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 投稿一覧ページ起動');
     
+    // 認証状態を反映
+    updateSettingsButton();
+    
     // フィルター状態を読み込み
     loadFiltersFromStorage();
     
@@ -25,6 +28,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('✅ 初期化完了');
 });
+
+// ==================== 認証 UI ====================
+function updateSettingsButton() {
+    const settingsButton = document.getElementById('settings-button');
+    if (!settingsButton) return;
+
+    const token = localStorage.getItem('overseasJobAuthToken');
+    if (token) {
+        settingsButton.textContent = '設定';
+        settingsButton.onclick = () => (location.href = 'settings.html');
+    } else {
+        settingsButton.textContent = 'ログイン';
+        settingsButton.onclick = () => (location.href = 'login.html');
+    }
+}
 
 // ==================== イベントリスナー設定 ====================
 function setupEventListeners() {

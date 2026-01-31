@@ -1,5 +1,7 @@
 // ==================== 設定画面用 JavaScript ====================
 
+const AUTH_STORAGE_KEY = 'overseasJobAuthToken';
+
 // 見たいフィルター状態（複数選択）
 const viewFilters = {
     country: new Set(),
@@ -17,6 +19,10 @@ const postDefaults = {
 // ==================== 初期化 ====================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 設定画面起動');
+
+    if (!ensureLoggedIn()) {
+        return;
+    }
     
     // 保存された設定を読み込み
     loadSettingsFromStorage();
@@ -32,6 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('✅ 初期化完了');
 });
+
+// ==================== 認証ガード ====================
+function ensureLoggedIn() {
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) {
+        location.href = 'login.html';
+        return false;
+    }
+    return true;
+}
 
 // ==================== 見たいフィルター用イベントリスナー ====================
 function setupViewFilterListeners() {

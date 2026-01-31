@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン - 海外転職ナレッジ</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🌏</span>
+                <span class="logo-text">海外転職ナレッジ</span>
+            </div>
+            <nav class="user-menu">
+                <button class="btn btn-secondary" onclick="location.href='index.html'">ホーム</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="container">
+        <section class="settings-panel">
+            <h2 class="settings-title">
+                <span class="settings-icon">🔐</span>
+                ログイン / 新規登録
+            </h2>
+            <p class="settings-description">投稿や設定の利用にはログインが必要です</p>
+
+            <div class="auth-status" id="auth-status">未ログイン</div>
+
+            <div class="form-group">
+                <label class="form-label" for="auth-email">メールアドレス</label>
+                <input
+                    type="email"
+                    id="auth-email"
+                    class="form-input"
+                    placeholder="例：example@mail.com"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="auth-password">パスワード</label>
+                <input
+                    type="password"
+                    id="auth-password"
+                    class="form-input"
+                    placeholder="パスワード"
+                >
+            </div>
+
+            <div class="auth-actions">
+                <button class="btn btn-primary" id="login-button">ログイン</button>
+                <button class="btn btn-secondary" id="register-button">新規登録</button>
+                <button class="btn btn-reset" id="logout-button" style="display: none;">ログアウト</button>
+                <button class="btn btn-secondary" id="to-settings-button" style="display: none;">設定へ</button>
+            </div>
+
+            <p class="auth-message" id="auth-message"></p>
+        </section>
+    </main>
+
+    <script src="js/login.js"></script>
+</body>
+</html>
