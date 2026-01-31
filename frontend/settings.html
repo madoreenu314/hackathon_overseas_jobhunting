@@ -27,12 +27,36 @@
             <h1>⚙️ アカウント設定</h1>
             <p class="page-subtitle">表示したい投稿と、投稿時のデフォルト設定を管理できます</p>
         </section>
+        <!-- ========== プロフィール設定 ========== -->
+        <section class="settings-panel">
+            <h2 class="settings-title">
+                <span class="settings-icon">👤</span>
+                ニックネーム
+            </h2>
+            <p class="settings-description">投稿時に表示される名前です（1-50文字）
+            </p>
+            
+            <!-- ニックネーム入力 -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="required"></span>
+                </label>
+                <input 
+                    type="text" 
+                    id="nickname-input" 
+                    class="form-input" 
+                    placeholder="例：田中太郎"
+                    maxlength="50"
+                >
+            </div>
 
+            
+        </section>
         <!-- ========== 見たい投稿のフィルター（複数選択） ========== -->
         <section class="settings-panel">
             <h2 class="settings-title">
                 <span class="settings-icon">🔍</span>
-                見たい投稿のフィルター設定
+                見たい投稿のフィルター
             </h2>
             <p class="settings-description">投稿一覧に表示したい投稿の条件を選択してください（複数選択可）</p>
             
@@ -92,7 +116,7 @@
         <section class="settings-panel">
             <h2 class="settings-title">
                 <span class="settings-icon">✍️</span>
-                投稿時のデフォルト設定
+                投稿時のデフォルト
             </h2>
             <p class="settings-description">新規投稿時に自動で選択される項目を設定してください（各カテゴリ1つずつ）</p>
             
