@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     displayFilterStatus();
     
     // 投稿データを読み込んで表示（バックエンド担当が実装）
-    // loadPosts();
+    loadPosts();  //←有効化done
     
     // イベントリスナー設定
     setupEventListeners();
@@ -190,10 +190,10 @@ function filterPosts(posts) {
 }
 
 // ==================== 投稿表示（バックエンド担当が実装予定） ====================
-/*
+
 function loadPosts() {
     // バックエンドが作成する posts.json からデータを読み込む
-    fetch('data/posts.json')
+    fetch('http://127.0.0.1:8000/api/posts')
         .then(response => response.json())
         .then(allPosts => {
             // フィルタリング
@@ -226,11 +226,11 @@ function displayPosts(posts) {
     });
 }
 
-function createPostCard(post) {
+//function createPostCard(post) {
     // 投稿カードのHTML要素を動的に生成
     // バックエンド担当が実装予定
-}
-*/
+//}
+
 
 // ==================== ソート変更 ====================
 function handleSortChange(event) {
