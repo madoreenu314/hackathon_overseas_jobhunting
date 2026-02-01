@@ -550,11 +550,29 @@ body {
     line-height: 1.4;
 }
 
+.post-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-bottom: 0.6rem;
+}
+
+.post-author-line {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
 .post-author-name {
     font-size: 0.85rem;
     color: var(--text-muted);
     font-weight: 600;
-    margin-bottom: 0.4rem;
+}
+
+.post-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
 }
 
 .post-meta {
@@ -594,12 +612,6 @@ body {
     font-size: 0.95rem;
 }
 
-.post-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 0.8rem;
-}
-
 .btn-sm {
     padding: 0.35rem 0.7rem;
     font-size: 0.8rem;
@@ -613,18 +625,12 @@ body {
 
 .post-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     padding-top: 1rem;
     border-top: 1px solid #f5f5f5;
     font-size: 0.85rem;
     color: var(--text-muted);
-}
-
-.post-author {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
 }
 
 .avatar {

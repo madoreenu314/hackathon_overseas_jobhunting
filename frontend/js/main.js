@@ -454,9 +454,16 @@ function createPostCard(post) {
         card.classList.add('post-card-own');
     }
     const createdAtText = formatPostDate(post.created_at);
+    const dateHtml = createdAtText ? `<span class="post-date">${createdAtText}</span>` : '';
     const isLiked = likeStatusMap.get(post.id) === true;
     card.innerHTML = `
-        <div class="post-author-name">${authorName}</div>
+        <div class="post-header-row">
+            <div class="post-author-line">
+                <span class="post-author-name">${authorName}</span>
+                ${dateHtml}
+            </div>
+             ${isOwnPost ? '<button type="button" class="btn btn-reset btn-sm post-delete" data-post-id="' + post.id + '">削除</button>' : ''}
+        </div>
         <h3 class="post-title">${post.title}</h3>
         <p class="post-content">${post.content}</p>
         <div class="post-meta">
@@ -465,16 +472,12 @@ function createPostCard(post) {
             <span class="meta-tag meta-type">📋 ${post.knowledge_type}</span>
         </div>
         <div class="post-footer">
-            <div class="post-author">
-                <span>${createdAtText}</span>
-            </div>
             <div class="post-stats">
                 <button type="button" class="btn btn-reset btn-sm like-button ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
                     ❤️ ${post.likes_count ?? 0}
                 </button>
             </div>
         </div>
-        ${isOwnPost ? '<div class="post-actions"><button class="btn btn-reset btn-sm post-delete" data-post-id="' + post.id + '">削除</button></div>' : ''}
     `;
 
     if (isOwnPost) {
