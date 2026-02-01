@@ -3,8 +3,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Kosugi Maru", sans-serif;
 }
-
+html{
+    font-size: 17px;
+}
 :root {
     /* カラーパレット */
     --primary-color: #2f855a;      /* 深めのメイングリーン */
