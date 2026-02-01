@@ -353,6 +353,11 @@ body {
     font-size: 1rem;
 }
 
+.btn.btn-secondary.btn-lg {
+  color: gray;
+} /*キャンセルボタンを見やすく*/
+
+
 .save-hint {
     color: var(--text-muted);
     font-size: 0.85rem;
