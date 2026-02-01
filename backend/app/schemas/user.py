@@ -15,6 +15,9 @@ IndustryJob = Literal[
     "製造業",
 ]
 
+# ✅ 新增：性别枚举（先用字符串约束，最稳）
+Gender = Literal["male", "female", "other", "unknown"]
+
 
 class UserOut(BaseModel):
     id: int
@@ -23,6 +26,11 @@ class UserOut(BaseModel):
 
     country_region: str | None = None
     industry_job: str | None = None
+
+    # ✅ 新增字段
+    bio: str | None = None
+    gender: str | None = None
+    age: int | None = None
 
     class Config:
         from_attributes = True
@@ -42,7 +50,12 @@ class TokenOut(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
+
 class UserUpdateMe(BaseModel):
-    nickname: str = Field(min_length=1, max_length=50)
+    nickname: Optional[str] = Field(default=None, min_length=1, max_length=50)
     country_region: Optional[CountryRegion] = None
     industry_job: Optional[IndustryJob] = None
+
+    bio: Optional[str] = Field(default=None, max_length=500)
+    gender: Optional[Gender] = None
+    age: Optional[int] = Field(default=None, ge=0, le=120)

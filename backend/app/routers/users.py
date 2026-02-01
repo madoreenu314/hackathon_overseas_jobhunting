@@ -20,12 +20,11 @@ def update_me(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    if payload.nickname is not None:
-        user.nickname = payload.nickname
-    if payload.country_region is not None:
-        user.country_region = payload.country_region
-    if payload.industry_job is not None:
-        user.industry_job = payload.industry_job
+    data = payload.model_dump(exclude_unset=True)
+
+    for k, v in data.items():
+        setattr(user, k, v)
+
     db.add(user)
     db.commit()
     db.refresh(user)
