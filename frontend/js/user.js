@@ -18,8 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     loadCurrentUser()
+        .then(() => loadUserProfile(userId))
         .then(() => loadUserPosts(userId))
-        .catch(() => loadUserPosts(userId));
+        .catch(() => {
+            loadUserProfile(userId);
+            loadUserPosts(userId);
+        });
 });
 
 function renderNoUser() {
@@ -38,16 +42,9 @@ function loadUserPosts(userId) {
                 : [];
             if (localStorage.getItem(AUTH_STORAGE_KEY)) {
                 loadLikeStatuses(posts)
-                    .then(() => {
-                        renderUserHeader(posts);
-                        renderUserPosts(posts);
-                    })
-                    .catch(() => {
-                        renderUserHeader(posts);
-                        renderUserPosts(posts);
-                    });
+                    .then(() => renderUserPosts(posts))
+                    .catch(() => renderUserPosts(posts));
             } else {
-                renderUserHeader(posts);
                 renderUserPosts(posts);
             }
         })
@@ -74,23 +71,17 @@ async function loadCurrentUser() {
     currentUserId = data.id;
 }
 
-function renderUserHeader(posts) {
+function renderUserHeaderFromProfile(profile) {
     const nameEl = document.getElementById('user-name');
     const defaultsEl = document.getElementById('user-defaults');
     const genderEl = document.getElementById('user-gender');
     const ageEl = document.getElementById('user-age');
     const bioEl = document.getElementById('user-bio');
 
-    if (!posts.length) {
-        if (nameEl) nameEl.textContent = 'ユーザー';
-        return;
-    }
+    if (nameEl) nameEl.textContent = profile.nickname || '匿名';
 
-    const first = posts[0];
-    if (nameEl) nameEl.textContent = first.author_nickname || '匿名';
-
-    const country = first.country_region || '未設定';
-    const industry = first.industry_job || '未設定';
+    const country = profile.country_region || '未設定';
+    const industry = profile.industry_job || '未設定';
     if (defaultsEl) {
         defaultsEl.innerHTML = `
             <span class="meta-tag meta-country">🌏 ${country}</span>
@@ -98,15 +89,24 @@ function renderUserHeader(posts) {
         `;
     }
 
-    // 本人ページのみプロフィールを表示（バックエンドに他ユーザー取得APIが無いため）
-    const userId = getUserIdFromQuery();
-    if (userId && currentUserId === userId) {
-        hydrateProfileFromServer(genderEl, ageEl, bioEl);
-    } else {
-        if (genderEl) genderEl.textContent = '非公開';
-        if (ageEl) ageEl.textContent = '非公開';
-        if (bioEl) bioEl.textContent = '非公開';
-    }
+    if (genderEl) genderEl.textContent = profile.gender || '未設定';
+    if (ageEl) ageEl.textContent = typeof profile.age === 'number' ? `${profile.age}` : '未設定';
+    if (bioEl) bioEl.textContent = profile.bio || '未設定';
+}
+
+function loadUserProfile(userId) {
+    return fetch(`${API_BASE}/api/users/${userId}`)
+        .then(response => {
+            if (!response.ok) throw new Error('profile');
+            return response.json();
+        })
+        .then(profile => {
+            renderUserHeaderFromProfile(profile);
+        })
+        .catch(() => {
+            const nameEl = document.getElementById('user-name');
+            if (nameEl) nameEl.textContent = 'ユーザー';
+        });
 }
 
 function renderUserPosts(posts) {
@@ -287,27 +287,4 @@ async function handleDeletePost(postId) {
     }
 }
 
-async function hydrateProfileFromServer(genderEl, ageEl, bioEl) {
-    const token = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (!token) return;
-
-    try {
-        const response = await fetch(`${API_BASE}/api/users/me`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        if (!response.ok) return;
-        const data = await response.json();
-
-        if (genderEl) {
-            genderEl.textContent = data.gender || '未設定';
-        }
-        if (ageEl) {
-            ageEl.textContent = typeof data.age === 'number' ? `${data.age}` : '未設定';
-        }
-        if (bioEl) {
-            bioEl.textContent = data.bio || '未設定';
-        }
-    } catch (error) {
-        // ignore
-    }
-}
+// hydrateProfileFromServer is no longer used (public profile endpoint is available).
