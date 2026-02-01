@@ -4,7 +4,7 @@ from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
 from app.routers.posts import router as posts_router
 from app.db import Base, engine
-from app.models import user, post
+from app.models import user, post, post_like
 
 from fastapi.middleware.cors import CORSMiddleware
 

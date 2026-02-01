@@ -26,6 +26,8 @@ class PostOut(BaseModel):
     title: str
     content: str
 
+    likes_count: int
+
     created_at: datetime  
 
     class Config:
