@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザーページ - 海外転職ナレッジ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo" onclick="location.href='index.html'">
+                <span class="logo-icon">🌏</span>
+                <span class="logo-text">海外転職ナレッジ</span>
+            </div>
+            <nav class="user-menu">
+                <button class="btn btn-secondary" onclick="location.href='index.html'">ホーム</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="settings-panel">
+            <h2 class="settings-title">
+                <span class="settings-icon">👤</span>
+                <span id="user-name">ユーザー</span>
+            </h2>
+            <div class="post-meta" id="user-defaults">
+                <span class="meta-tag meta-country">🌏 未設定</span>
+                <span class="meta-tag meta-industry">💼 未設定</span>
+            </div>
+        </section>
+
+        <section class="posts-section">
+            <div class="posts-header">
+                <h2 class="posts-title">このユーザーの投稿</h2>
+            </div>
+            <div class="posts-list" id="user-posts-list">
+                <div class="loading">投稿を読み込んでいます...</div>
+            </div>
+            <div class="no-posts" id="user-no-posts" style="display: none;">
+                <p>😔 投稿が見つかりませんでした。</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/user.js"></script>
+</body>
+</html>

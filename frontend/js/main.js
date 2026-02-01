@@ -458,10 +458,14 @@ function createPostCard(post) {
     card.innerHTML = `
         <div class="post-header-row">
             <div class="post-author-line">
-                <span class="post-author-name">${authorName}</span>
+                <span class="post-author-name">
+                    <a class="author-link" href="user.html?user_id=${post.author_id}">
+                        ${authorName}
+                    </a>
+                </span>
                 ${dateHtml}
             </div>
-             ${isOwnPost ? '<button type="button" class="btn btn-reset btn-sm post-delete" data-post-id="' + post.id + '">削除</button>' : ''}
+            ${isOwnPost ? '<button type="button" class="btn btn-reset btn-sm post-delete" data-post-id="' + post.id + '">削除</button>' : ''}
         </div>
         <h3 class="post-title">${post.title}</h3>
         <p class="post-content">${post.content}</p>
