@@ -446,6 +446,7 @@ function createPostCard(post) {
     if (isOwnPost) {
         card.classList.add('post-card-own');
     }
+    const createdAtText = formatPostDate(post.created_at);
     card.innerHTML = `
         <div class="post-author-name">${authorName}</div>
         <h3 class="post-title">${post.title}</h3>
@@ -454,6 +455,11 @@ function createPostCard(post) {
             <span class="meta-tag meta-country">🌏 ${post.country_region}</span>
             <span class="meta-tag meta-industry">💼 ${post.industry_job}</span>
             <span class="meta-tag meta-type">📋 ${post.knowledge_type}</span>
+        </div>
+        <div class="post-footer">
+            <div class="post-author">
+                <span>${createdAtText}</span>
+            </div>
         </div>
         ${isOwnPost ? '<div class="post-actions"><button class="btn btn-reset btn-sm post-delete" data-post-id="' + post.id + '">削除</button></div>' : ''}
     `;
@@ -469,6 +475,18 @@ function createPostCard(post) {
         }
     }
     return card;
+}
+
+function formatPostDate(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) return '';
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    return `${yyyy}/${mm}/${dd} ${hh}:${min}`;
 }
 
 async function handleDeletePost(postId) {
