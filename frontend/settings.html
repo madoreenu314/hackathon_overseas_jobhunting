@@ -53,6 +53,40 @@
                 >
             </div>
 
+            <div class="form-group">
+                <label class="form-label" for="gender-select">性別</label>
+                <select id="gender-select" class="form-input">
+                    <option value="">未設定</option>
+                    <option value="male">男性</option>
+                    <option value="female">女性</option>
+                    <option value="other">その他</option>
+                    <option value="unknown">回答しない</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="age-input">年齢</label>
+                <input
+                    type="number"
+                    id="age-input"
+                    class="form-input"
+                    placeholder="例：30"
+                    min="0"
+                    max="120"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="bio-input">自己紹介</label>
+                <textarea
+                    id="bio-input"
+                    class="form-input"
+                    rows="4"
+                    maxlength="500"
+                    placeholder="例：海外転職を目指して情報収集中です。"
+                ></textarea>
+            </div>
+
             
         </section>
         <!-- ========== 見たい投稿のフィルター（複数選択） ========== -->

@@ -89,8 +89,21 @@ async function hydrateProfileFromServer() {
 
         const data = await response.json();
         const nicknameInput = document.getElementById('nickname-input');
+        const genderSelect = document.getElementById('gender-select');
+        const ageInput = document.getElementById('age-input');
+        const bioInput = document.getElementById('bio-input');
+
         if (nicknameInput && data.nickname) {
             nicknameInput.value = data.nickname;
+        }
+        if (genderSelect && data.gender) {
+            genderSelect.value = data.gender;
+        }
+        if (ageInput && typeof data.age === 'number') {
+            ageInput.value = String(data.age);
+        }
+        if (bioInput && data.bio) {
+            bioInput.value = data.bio;
         }
     } catch (error) {
         // 失敗時は無視（入力はユーザーが手動で行える）
@@ -260,7 +273,13 @@ async function saveAndRedirect() {
     console.log('💾 設定を保存して投稿一覧へ');
 
     const nicknameInput = document.getElementById('nickname-input');
+    const genderSelect = document.getElementById('gender-select');
+    const ageInput = document.getElementById('age-input');
+    const bioInput = document.getElementById('bio-input');
     const nickname = nicknameInput ? nicknameInput.value.trim() : '';
+    const gender = genderSelect ? genderSelect.value : '';
+    const ageValue = ageInput ? ageInput.value.trim() : '';
+    const bio = bioInput ? bioInput.value.trim() : '';
     const token = localStorage.getItem('overseasJobAuthToken');
 
     if (!token) {
@@ -283,6 +302,18 @@ async function saveAndRedirect() {
 
     if (nickname) {
         payload.nickname = nickname;
+    }
+    if (gender) {
+        payload.gender = gender;
+    }
+    if (ageValue) {
+        const ageNum = Number(ageValue);
+        if (!Number.isNaN(ageNum)) {
+            payload.age = ageNum;
+        }
+    }
+    if (bio) {
+        payload.bio = bio;
     }
 
     try {

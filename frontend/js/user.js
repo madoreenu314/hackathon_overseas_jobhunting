@@ -77,6 +77,9 @@ async function loadCurrentUser() {
 function renderUserHeader(posts) {
     const nameEl = document.getElementById('user-name');
     const defaultsEl = document.getElementById('user-defaults');
+    const genderEl = document.getElementById('user-gender');
+    const ageEl = document.getElementById('user-age');
+    const bioEl = document.getElementById('user-bio');
 
     if (!posts.length) {
         if (nameEl) nameEl.textContent = 'ユーザー';
@@ -93,6 +96,16 @@ function renderUserHeader(posts) {
             <span class="meta-tag meta-country">🌏 ${country}</span>
             <span class="meta-tag meta-industry">💼 ${industry}</span>
         `;
+    }
+
+    // 本人ページのみプロフィールを表示（バックエンドに他ユーザー取得APIが無いため）
+    const userId = getUserIdFromQuery();
+    if (userId && currentUserId === userId) {
+        hydrateProfileFromServer(genderEl, ageEl, bioEl);
+    } else {
+        if (genderEl) genderEl.textContent = '非公開';
+        if (ageEl) ageEl.textContent = '非公開';
+        if (bioEl) bioEl.textContent = '非公開';
     }
 }
 
@@ -271,5 +284,30 @@ async function handleDeletePost(postId) {
         }
     } catch (error) {
         alert(error.message || '削除に失敗しました。');
+    }
+}
+
+async function hydrateProfileFromServer(genderEl, ageEl, bioEl) {
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/api/users/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) return;
+        const data = await response.json();
+
+        if (genderEl) {
+            genderEl.textContent = data.gender || '未設定';
+        }
+        if (ageEl) {
+            ageEl.textContent = typeof data.age === 'number' ? `${data.age}` : '未設定';
+        }
+        if (bioEl) {
+            bioEl.textContent = data.bio || '未設定';
+        }
+    } catch (error) {
+        // ignore
     }
 }
