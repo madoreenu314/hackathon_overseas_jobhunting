@@ -55,7 +55,7 @@ body {
 
 /* ==================== ヘッダー ==================== */
 .header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);/*linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);*/
     color: white;
     padding: 1.5rem 2rem;
     box-shadow: var(--shadow-md);
@@ -372,7 +372,7 @@ body {
 .container {
     max-width: 1200px;
     margin: 2rem auto;
-    padding: 0 2rem;
+    padding: 0 8rem;
 }
 
 /* ==================== フィルター設定パネル ==================== */
