@@ -51,3 +51,19 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     return post
+
+
+@router.delete("/{post_id}")
+def delete_post(
+    post_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    post = db.get(Post, post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if post.author_id != user.id:
+        raise HTTPException(status_code=403, detail="Not allowed")
+    db.delete(post)
+    db.commit()
+    return {"status": "deleted"}

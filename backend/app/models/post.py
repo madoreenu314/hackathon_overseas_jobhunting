@@ -27,5 +27,8 @@ class Post(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
-    # optional: relationship（如果你项目里已经设置了 User 的 relationship，可以再补）
-    # author = relationship("User")
+    author = relationship("User")
+
+    @property
+    def author_nickname(self) -> str | None:
+        return self.author.nickname if self.author else None

@@ -19,7 +19,7 @@ const INDUSTRY_VALUE_MAP = {
     consulting: 'コンサル',
     marketing: 'マーケティング',
     medical: '医療',
-    education: '教育',
+    education: '教育業',
     manufacturing: '製造業'
 };
 
@@ -194,6 +194,16 @@ function setupActionButtons() {
     if (saveButton) {
         saveButton.addEventListener('click', saveAndRedirect);
     }
+
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', handleLogout);
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    location.href = 'login.html';
 }
 
 // 表示フィルターをリセット

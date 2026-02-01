@@ -546,6 +546,13 @@ body {
     line-height: 1.4;
 }
 
+.post-author-name {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
 .post-meta {
     display: flex;
     gap: 0.6rem;
@@ -553,11 +560,12 @@ body {
 }
 
 .meta-tag {
-    padding: 0.35rem 0.8rem;
+    padding: 0.25rem 0.6rem;
     border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.7rem;
+    font-weight: 600;
     letter-spacing: 0.3px;
+    opacity: 0.85;
 }
 
 .meta-country {
@@ -580,6 +588,17 @@ body {
     line-height: 1.7;
     margin: 1rem 0;
     font-size: 0.95rem;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.8rem;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
 }
 
 .post-footer {

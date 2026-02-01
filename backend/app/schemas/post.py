@@ -17,6 +17,7 @@ class PostCreateIn(BaseModel):
 class PostOut(BaseModel):
     id: int
     author_id: int
+    author_nickname: str | None = None
 
     country_region: str
     industry_job: str

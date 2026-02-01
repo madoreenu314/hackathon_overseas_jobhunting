@@ -9,13 +9,47 @@ let currentFilters = {
 
 const API_BASE = 'http://127.0.0.1:8000';
 const AUTH_STORAGE_KEY = 'overseasJobAuthToken';
+let currentUserId = null;
+let currentUserNickname = null;
+
+const COUNTRY_VALUE_MAP = {
+    usa: 'アメリカ合衆国',
+    singapore: 'シンガポール',
+    uk: 'イギリス',
+    canada: 'カナダ',
+    australia: 'オーストラリア',
+    germany: 'ドイツ',
+    france: 'フランス'
+};
+
+const TYPE_VALUE_MAP = {
+    housing: '住居',
+    job: '職業',
+    visa: 'ビザ',
+    cost: '生活コスト',
+    culture: '文化',
+    education: '教育'
+};
+
+const INDUSTRY_VALUE_MAP = {
+    it: 'IT・エンジニア',
+    finance: '金融',
+    consulting: 'コンサル',
+    marketing: 'マーケティング',
+    medical: '医療',
+    education: '教育業',
+    manufacturing: '製造業'
+};
 
 // ==================== 初期化 ====================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     console.log('🚀 投稿一覧ページ起動');
     
     // 認証状態を反映
     updateSettingsButton();
+    
+    // ログイン中ユーザー情報を取得
+    await loadCurrentUser();
     
     // フィルター状態を読み込み
     loadFiltersFromStorage();
@@ -31,6 +65,30 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('✅ 初期化完了');
 });
+
+async function loadCurrentUser() {
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) {
+        currentUserId = null;
+        currentUserNickname = null;
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/api/users/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) {
+            throw new Error('Failed to load user');
+        }
+        const data = await response.json();
+        currentUserId = data.id;
+        currentUserNickname = data.nickname || null;
+    } catch (error) {
+        currentUserId = null;
+        currentUserNickname = null;
+    }
+}
 
 // ==================== 認証 UI ====================
 function updateSettingsButton() {
@@ -254,7 +312,7 @@ function displayActiveFilterTags(container) {
         'consulting': '📊 コンサル',
         'marketing': '📱 マーケティング',
         'medical': '⚕️ 医療',
-        'education': '👨‍🏫 教育',
+        'education': '👨‍🏫 教育業',
         'manufacturing': '🏭 製造業',
         
     };
@@ -292,15 +350,25 @@ function filterPosts(posts) {
         currentFilters.industry.length === 0) {
         return posts;
     }
+
+    const selectedCountries = currentFilters.country
+        .map(value => COUNTRY_VALUE_MAP[value])
+        .filter(Boolean);
+    const selectedTypes = currentFilters.type
+        .map(value => TYPE_VALUE_MAP[value])
+        .filter(Boolean);
+    const selectedIndustries = currentFilters.industry
+        .map(value => INDUSTRY_VALUE_MAP[value])
+        .filter(Boolean);
     
     // フィルター条件に合う投稿のみ返す
     return posts.filter(post => {
-        const matchCountry = currentFilters.country.length === 0 || 
-                           currentFilters.country.includes(post.country);
-        const matchType = currentFilters.type.length === 0 || 
-                         currentFilters.type.includes(post.type);
-        const matchIndustry = currentFilters.industry.length === 0 || 
-                             currentFilters.industry.includes(post.industry);
+        const matchCountry = selectedCountries.length === 0 || 
+                           selectedCountries.includes(post.country_region);
+        const matchType = selectedTypes.length === 0 || 
+                         selectedTypes.includes(post.knowledge_type);
+        const matchIndustry = selectedIndustries.length === 0 || 
+                             selectedIndustries.includes(post.industry_job);
         
         // すべての条件に合致する投稿のみ
         return matchCountry && matchType && matchIndustry;
@@ -347,16 +415,58 @@ function displayPosts(posts) {
 function createPostCard(post) {
     const card = document.createElement('div');
     card.className = 'post-card';
+    const authorName = post.author_nickname || '匿名';
+    const isOwnPost = currentUserId !== null && post.author_id === currentUserId;
     card.innerHTML = `
+        <div class="post-author-name">${authorName}</div>
         <h3 class="post-title">${post.title}</h3>
         <p class="post-content">${post.content}</p>
         <div class="post-meta">
-            <span>🌏 ${post.country_region}</span>
-            <span>💼 ${post.industry_job}</span>
-            <span>📋 ${post.knowledge_type}</span>
+            <span class="meta-tag meta-country">🌏 ${post.country_region}</span>
+            <span class="meta-tag meta-industry">💼 ${post.industry_job}</span>
+            <span class="meta-tag meta-type">📋 ${post.knowledge_type}</span>
         </div>
+        ${isOwnPost ? '<div class="post-actions"><button class="btn btn-reset btn-sm post-delete" data-post-id="' + post.id + '">削除</button></div>' : ''}
     `;
+
+    if (isOwnPost) {
+        const deleteButton = card.querySelector('.post-delete');
+        if (deleteButton) {
+            deleteButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const postId = deleteButton.getAttribute('data-post-id');
+                handleDeletePost(postId);
+            });
+        }
+    }
     return card;
+}
+
+async function handleDeletePost(postId) {
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) {
+        alert('ログインしてください。');
+        location.href = 'login.html';
+        return;
+    }
+
+    const confirmed = window.confirm('この投稿を削除しますか？');
+    if (!confirmed) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/api/posts/${postId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const detail = data.detail || '削除に失敗しました。';
+            throw new Error(detail);
+        }
+        loadPosts();
+    } catch (error) {
+        alert(error.message || '削除に失敗しました。');
+    }
 }
 
 
