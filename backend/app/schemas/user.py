@@ -15,7 +15,6 @@ IndustryJob = Literal[
     "製造業",
 ]
 
-# ✅ 新增：性别枚举（先用字符串约束，最稳）
 Gender = Literal["male", "female", "other", "unknown"]
 
 
@@ -27,9 +26,22 @@ class UserOut(BaseModel):
     country_region: str | None = None
     industry_job: str | None = None
 
-    # ✅ 新增字段
     bio: str | None = None
-    gender: str | None = None
+    gender: Gender | None = None
+    age: int | None = None
+
+    class Config:
+        from_attributes = True
+
+class UserPublicOut(BaseModel):
+    id: int
+    nickname: str | None = None
+
+    country_region: str | None = None
+    industry_job: str | None = None
+
+    bio: str | None = None
+    gender: Gender | None = None
     age: int | None = None
 
     class Config:
