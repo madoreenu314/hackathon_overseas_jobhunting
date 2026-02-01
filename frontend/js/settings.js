@@ -198,13 +198,43 @@ function resetPostDefaults() {
 }
 
 // 保存して投稿一覧へ
-function saveAndRedirect() {
+async function saveAndRedirect() {
     console.log('💾 設定を保存して投稿一覧へ');
-    
+
+    const nicknameInput = document.getElementById('nickname-input');
+    const nickname = nicknameInput ? nicknameInput.value.trim() : '';
+    const token = localStorage.getItem('overseasJobAuthToken');
+
+    if (nickname) {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/api/users/me', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ nickname })
+            });
+
+            if (!res.ok) {
+                throw new Error('ニックネームの保存に失敗しました');
+            }
+
+            // ローカルにも保存（任意）
+            const saved = localStorage.getItem('overseasJobSettings');
+            const data = saved ? JSON.parse(saved) : {};
+            data.nickname = nickname;
+            localStorage.setItem('overseasJobSettings', JSON.stringify(data));
+        } catch (e) {
+            alert(e.message || '保存に失敗しました');
+            return;
+        }
+    }
+
     const saveButton = document.getElementById('save-settings');
     saveButton.textContent = '✓ 保存しました！';
     saveButton.style.background = '#4caf50';
-    
+
     setTimeout(() => {
         location.href = 'index.html';
     }, 500);
