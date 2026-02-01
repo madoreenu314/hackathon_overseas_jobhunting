@@ -2,6 +2,22 @@
 
 const AUTH_STORAGE_KEY = 'overseasJobAuthToken';
 const API_BASE = 'http://127.0.0.1:8000';
+const SETTINGS_KEY_PREFIX = 'overseasJobSettings_';
+
+function getSettingsStorageKey() {
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) return null;
+    try {
+        const payload = token.split('.')[1];
+        const decoded = JSON.parse(atob(payload));
+        if (decoded && decoded.sub) {
+            return `${SETTINGS_KEY_PREFIX}${decoded.sub}`;
+        }
+    } catch (error) {
+        // ignore
+    }
+    return null;
+}
 
 const COUNTRY_VALUE_MAP = {
     usa: 'アメリカ合衆国',
@@ -331,12 +347,15 @@ async function saveAndRedirect() {
         }
 
         // ローカルにも保存（任意）
-        const saved = localStorage.getItem('overseasJobSettings');
+        const key = getSettingsStorageKey();
+        const saved = key ? localStorage.getItem(key) : null;
         const data = saved ? JSON.parse(saved) : {};
         if (nickname) {
             data.nickname = nickname;
         }
-        localStorage.setItem('overseasJobSettings', JSON.stringify(data));
+        if (key) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
     } catch (e) {
         alert(e.message || '保存に失敗しました');
         return;
@@ -355,6 +374,8 @@ async function saveAndRedirect() {
 
 // 設定を保存
 function saveSettingsToStorage() {
+    const key = getSettingsStorageKey();
+    if (!key) return;
     const storageData = {
         viewFilters: {
             country: Array.from(viewFilters.country),
@@ -369,13 +390,14 @@ function saveSettingsToStorage() {
         savedAt: new Date().toISOString()
     };
     
-    localStorage.setItem('overseasJobSettings', JSON.stringify(storageData));
+    localStorage.setItem(key, JSON.stringify(storageData));
     console.log('💾 設定を保存:', storageData);
 }
 
 // 設定を読み込み
 function loadSettingsFromStorage() {
-    const saved = localStorage.getItem('overseasJobSettings');
+    const key = getSettingsStorageKey();
+    const saved = key ? localStorage.getItem(key) : null;
     
     if (!saved) {
         console.log('📭 保存された設定なし');
@@ -404,7 +426,9 @@ function loadSettingsFromStorage() {
         console.log('📬 設定を復元:', data);
     } catch (error) {
         console.error('❌ 設定読み込みエラー:', error);
-        localStorage.removeItem('overseasJobSettings');
+        if (key) {
+            localStorage.removeItem(key);
+        }
     }
 }
 

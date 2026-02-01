@@ -13,6 +13,22 @@ let currentUserId = null;
 let currentUserNickname = null;
 let allPostsCache = [];
 let currentSort = 'latest';
+const SETTINGS_KEY_PREFIX = 'overseasJobSettings_';
+
+function getSettingsStorageKey() {
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) return null;
+    try {
+        const payload = token.split('.')[1];
+        const decoded = JSON.parse(atob(payload));
+        if (decoded && decoded.sub) {
+            return `${SETTINGS_KEY_PREFIX}${decoded.sub}`;
+        }
+    } catch (error) {
+        // ignore
+    }
+    return null;
+}
 const likeStatusMap = new Map();
 
 const COUNTRY_VALUE_MAP = {
@@ -225,7 +241,8 @@ async function handlePostSubmit(event) {
 
 // ==================== フィルター読み込み ====================
 function loadFiltersFromStorage() {
-    const saved = localStorage.getItem('overseasJobSettings');
+    const key = getSettingsStorageKey();
+    const saved = key ? localStorage.getItem(key) : null;
     
     if (!saved) {
         console.log('📭 保存されたフィルターなし');
