@@ -7,6 +7,9 @@ let currentFilters = {
     industry: []
 };
 
+const API_BASE = 'http://127.0.0.1:8000';
+const AUTH_STORAGE_KEY = 'overseasJobAuthToken';
+
 // ==================== 初期化 ====================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 投稿一覧ページ起動');
@@ -51,7 +54,7 @@ function setupEventListeners() {
     if (fabButton) {
         fabButton.addEventListener('click', function() {
             console.log('📝 新規投稿ボタンがクリックされました');
-            alert('新規投稿フォームはDay 2で実装予定です！');
+            openPostModal();
         });
     }
     
@@ -59,6 +62,103 @@ function setupEventListeners() {
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
         sortSelect.addEventListener('change', handleSortChange);
+    }
+
+    setupPostModal();
+}
+
+// ==================== 新規投稿モーダル ====================
+function setupPostModal() {
+    const modal = document.getElementById('post-modal');
+    const closeButton = document.getElementById('post-modal-close');
+    const cancelButton = document.getElementById('post-cancel');
+    const form = document.getElementById('post-form');
+
+    if (closeButton) {
+        closeButton.addEventListener('click', closePostModal);
+    }
+    if (cancelButton) {
+        cancelButton.addEventListener('click', closePostModal);
+    }
+    if (modal) {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closePostModal();
+            }
+        });
+    }
+    if (form) {
+        form.addEventListener('submit', handlePostSubmit);
+    }
+}
+
+function openPostModal() {
+    const modal = document.getElementById('post-modal');
+    if (modal) {
+        modal.style.display = 'block';
+        modal.setAttribute('aria-hidden', 'false');
+    }
+}
+
+function closePostModal() {
+    const modal = document.getElementById('post-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+    }
+}
+
+async function handlePostSubmit(event) {
+    event.preventDefault();
+
+    const titleInput = document.getElementById('post-title');
+    const typeSelect = document.getElementById('post-knowledge-type');
+    const contentInput = document.getElementById('post-content');
+
+    const title = titleInput ? titleInput.value.trim() : '';
+    const knowledgeType = typeSelect ? typeSelect.value : '';
+    const content = contentInput ? contentInput.value.trim() : '';
+
+    if (!title || !knowledgeType || !content) {
+        alert('すべての項目を入力してください。');
+        return;
+    }
+
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) {
+        alert('ログインしてください。');
+        location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/api/posts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                knowledge_type: knowledgeType,
+                title,
+                content
+            })
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const detail = data.detail || '投稿に失敗しました。';
+            throw new Error(detail);
+        }
+
+        if (titleInput) titleInput.value = '';
+        if (typeSelect) typeSelect.value = '';
+        if (contentInput) contentInput.value = '';
+
+        closePostModal();
+        loadPosts();
+    } catch (error) {
+        alert(error.message || '投稿に失敗しました。');
     }
 }
 
@@ -211,7 +311,7 @@ function filterPosts(posts) {
 
 function loadPosts() {
     // バックエンドが作成する posts.json からデータを読み込む
-    fetch('http://127.0.0.1:8000/api/posts') // ←FastAPI
+    fetch(`${API_BASE}/api/posts`) // ←FastAPI
         .then(response => response.json())
         .then(allPosts => {
             // フィルタリング
