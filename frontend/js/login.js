@@ -108,6 +108,8 @@ function updateAuthUI(isLoggedIn, user) {
     const registerButton = document.getElementById('register-button');
     const logoutButton = document.getElementById('logout-button');
     const toSettingsButton = document.getElementById('to-settings-button');
+    const inputField1 = document.getElementById('input-field1');
+    const inputField2 = document.getElementById('input-field2');
 
     if (statusEl) {
         statusEl.textContent = isLoggedIn
@@ -115,10 +117,12 @@ function updateAuthUI(isLoggedIn, user) {
             : '未ログイン';
     }
 
-    if (loginButton) loginButton.disabled = isLoggedIn;// ? 'none' : 'inline-flex'; //ログインしたらログインボタンと新規登録ボタンは隠す
-    if (registerButton) registerButton.disabled = isLoggedIn;// ? 'none' : 'inline-flex';
+    if (loginButton) loginButton.style.display = isLoggedIn ? 'none' : 'inline-flex'; //ログインしたらログインボタンと新規登録ボタンは隠す
+    if (registerButton) registerButton.style.display = isLoggedIn ? 'none' : 'inline-flex';// ? 'none' : 'inline-flex';
     if (logoutButton) logoutButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
     if (toSettingsButton) toSettingsButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
+    if (inputField1) inputField1.style.display = isLoggedIn ? 'none' : 'inline-flex'; 
+    if (inputField2) inputField2.style.display = isLoggedIn ? 'none' : 'inline-flex'; 
 }
 
 function setAuthButtonsDisabled(disabled) {
