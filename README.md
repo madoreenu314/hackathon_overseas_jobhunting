@@ -10,6 +10,22 @@
 - フロントエンド: madoreenu314
 - バックエンド: YoshihiroChen
 
+## 使用技術
+### フロントエンド
+- HTML
+- CSS
+- JavaScript（Vanilla）
+
+### バックエンド
+- Python
+- FastAPI
+- SQLAlchemy
+- SQLite
+
+### その他
+- Git / GitHub
+
+
 ## ブランチ戦略
 - main: 本番用
 - frontend: フロントエンド開発
