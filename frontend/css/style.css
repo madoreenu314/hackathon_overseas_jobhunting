@@ -36,12 +36,12 @@ html{
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.15);
-    --shadow-fab: 0 4px 20px rgba(102, 126, 234, 0.4);
+    --shadow-fab: 0 0 20px rgba(0, 0, 0, 0.3);   /* ふんわり全方向 */
     
     /* その他 */
     --border-radius: 12px;
     --border-radius-sm: 8px;
-    --transition: all 0.3s ease;
+    --transition: all 0.3s ease; /*投稿ボタンの回転*/
 }
 
 body {
@@ -325,7 +325,7 @@ body {
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    background: var(--primary-light);/*linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);*/
     color: white;
     display: flex;
     align-items: center;
@@ -670,7 +670,7 @@ body {
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);/*linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);*/
     color: white;
     border: none;
     font-size: 2rem;
@@ -682,7 +682,7 @@ body {
 
 .fab-button:hover {
     transform: scale(1.1) rotate(90deg);
-    box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+    /*box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);*/
 }
 
 .fab-button:active {
