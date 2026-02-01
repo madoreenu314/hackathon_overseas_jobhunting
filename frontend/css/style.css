@@ -525,18 +525,18 @@ body {
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
     border-left: 4px solid var(--primary-color);
-    cursor: pointer;
+    cursor: default;
 }
 
 .post-card-own {
     border-left-color: #83c12c;
 }
 
-.post-card:hover {
+/*.post-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-left-width: 6px;
-}
+}*/
 
 .post-header {
     margin-bottom: 1rem;
@@ -603,6 +603,12 @@ body {
 .btn-sm {
     padding: 0.35rem 0.7rem;
     font-size: 0.8rem;
+}
+
+.like-button.liked {
+    background: rgba(104, 211, 145, 0.2);
+    color: var(--primary-color);
+    border: 1px solid rgba(47, 133, 90, 0.4);
 }
 
 .post-footer {
@@ -774,7 +780,7 @@ body {
     }
 }
 
-.post-card {
+/*.post-card {
     animation: slideUp 0.4s ease-out;
 }
 

@@ -13,6 +13,7 @@ let currentUserId = null;
 let currentUserNickname = null;
 let allPostsCache = [];
 let currentSort = 'latest';
+const likeStatusMap = new Map();
 
 const COUNTRY_VALUE_MAP = {
     usa: 'アメリカ合衆国',
@@ -385,7 +386,13 @@ function loadPosts() {
         .then(response => response.json())
         .then(allPosts => {
             allPostsCache = Array.isArray(allPosts) ? allPosts : [];
-            applyFiltersAndSort();
+            if (localStorage.getItem(AUTH_STORAGE_KEY)) {
+                loadLikeStatuses(allPostsCache)
+                    .then(applyFiltersAndSort)
+                    .catch(() => applyFiltersAndSort());
+            } else {
+                applyFiltersAndSort();
+            }
         })
         .catch(error => {
             console.error('投稿読み込みエラー:', error);
@@ -447,6 +454,7 @@ function createPostCard(post) {
         card.classList.add('post-card-own');
     }
     const createdAtText = formatPostDate(post.created_at);
+    const isLiked = likeStatusMap.get(post.id) === true;
     card.innerHTML = `
         <div class="post-author-name">${authorName}</div>
         <h3 class="post-title">${post.title}</h3>
@@ -459,6 +467,11 @@ function createPostCard(post) {
         <div class="post-footer">
             <div class="post-author">
                 <span>${createdAtText}</span>
+            </div>
+            <div class="post-stats">
+                <button type="button" class="btn btn-reset btn-sm like-button ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                    ❤️ ${post.likes_count ?? 0}
+                </button>
             </div>
         </div>
         ${isOwnPost ? '<div class="post-actions"><button class="btn btn-reset btn-sm post-delete" data-post-id="' + post.id + '">削除</button></div>' : ''}
@@ -473,6 +486,16 @@ function createPostCard(post) {
                 handleDeletePost(postId);
             });
         }
+    }
+
+    const likeButton = card.querySelector('.like-button');
+    if (likeButton) {
+        likeButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const postId = likeButton.getAttribute('data-post-id');
+            handleLikePost(postId, likeButton);
+        });
     }
     return card;
 }
@@ -514,6 +537,73 @@ async function handleDeletePost(postId) {
     } catch (error) {
         alert(error.message || '削除に失敗しました。');
     }
+}
+
+async function handleLikePost(postId, buttonEl) {
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) {
+        alert('ログインしてください。');
+        location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const currentlyLiked = likeStatusMap.get(Number(postId)) === true;
+        const method = currentlyLiked ? 'DELETE' : 'POST';
+        const response = await fetch(`${API_BASE}/api/posts/${postId}/like`, {
+            method,
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const detail = data.detail || 'いいねに失敗しました。';
+            throw new Error(detail);
+        }
+        const postIdNum = Number(postId);
+        if (typeof data.likes_count === 'number') {
+            const target = allPostsCache.find(p => p.id === postIdNum);
+            if (target) target.likes_count = data.likes_count;
+        }
+        if (typeof data.liked === 'boolean') {
+            likeStatusMap.set(postIdNum, data.liked);
+        }
+
+        if (buttonEl) {
+            const liked = likeStatusMap.get(postIdNum) === true;
+            buttonEl.classList.toggle('liked', liked);
+            const count = typeof data.likes_count === 'number'
+                ? data.likes_count
+                : (allPostsCache.find(p => p.id === postIdNum)?.likes_count ?? 0);
+            buttonEl.textContent = `❤️ ${count}`;
+        }
+    } catch (error) {
+        alert(error.message || 'いいねに失敗しました。');
+    }
+}
+
+async function loadLikeStatuses(posts) {
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) return;
+
+    const requests = posts.map(async (post) => {
+        try {
+            const response = await fetch(`${API_BASE}/api/posts/${post.id}/like`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!response.ok) return;
+            const data = await response.json();
+            if (typeof data.liked === 'boolean') {
+                likeStatusMap.set(post.id, data.liked);
+            }
+            if (typeof data.likes_count === 'number') {
+                post.likes_count = data.likes_count;
+            }
+        } catch (error) {
+            // ignore per-post failures
+        }
+    });
+
+    await Promise.all(requests);
 }
 
 
