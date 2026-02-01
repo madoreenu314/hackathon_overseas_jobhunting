@@ -412,8 +412,7 @@ function sortPosts(posts, sortType) {
     } else if (sortType === 'latest') {
         copied.sort((a, b) => getPostTime(b) - getPostTime(a));
     } else if (sortType === 'popular') {
-        // 人気順のデータがないので新着順で代用
-        copied.sort((a, b) => getPostTime(b) - getPostTime(a));
+        copied.sort((a, b) => (b.likes_count ?? 0) - (a.likes_count ?? 0));
     }
     return copied;
 }
