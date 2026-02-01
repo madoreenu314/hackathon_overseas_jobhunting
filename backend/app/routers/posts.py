@@ -53,7 +53,7 @@ def create_post(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    # ✅ 投稿時はユーザーの country_region / industry_job を強制利用
+    
     if not user.country_region or not user.industry_job:
         raise HTTPException(
             status_code=400,
@@ -72,13 +72,12 @@ def create_post(
     db.commit()
     db.refresh(post)
 
-    # 新規作成直後は 0 でも良いが、統一のため集計関数を使う
     return _to_post_out_dict(db, post)
 
 
 @router.get("", response_model=list[PostOut])
 def list_posts(db: Session = Depends(get_db)):
-    # 新しい順
+   
     rows = db.execute(select(Post).order_by(Post.id.desc())).scalars().all()
     return [_to_post_out_dict(db, p) for p in rows]
 
@@ -107,9 +106,6 @@ def delete_post(
     return {"status": "deleted"}
 
 
-# -----------------------------
-# Likes
-# -----------------------------
 
 @router.get("/{post_id}/like")
 def get_like_status(
@@ -137,7 +133,6 @@ def like_post(
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
 
-    # ✅ 幂等：已点赞则不重复插入
     if _liked_by_user(db, post_id, user.id):
         return {"liked": True, "likes_count": _likes_count(db, post_id)}
 

@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.deps import get_current_user
 from app.db import get_db
 from app.models.user import User
-from app.schemas.user import UserOut, UserUpdateMe
+from app.schemas.user import UserOut, UserUpdateMe, UserPublicOut
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
@@ -29,3 +29,10 @@ def update_me(
     db.commit()
     db.refresh(user)
     return user
+
+@router.get("/{user_id}", response_model=UserPublicOut)
+def get_user_profile(user_id: int, db: Session = Depends(get_db)):
+    u = db.get(User, user_id)
+    if not u:
+        raise HTTPException(status_code=404, detail="User not found")
+    return u
