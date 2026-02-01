@@ -234,7 +234,7 @@ function displayActiveFilterTags(container) {
         'australia': '🇦🇺 オーストラリア',
         'germany': '🇩🇪 ドイツ',
         'france': '🇫🇷 フランス',
-        'netherlands': '🇳🇱 オランダ'
+        
     };
     
     // 知見の種類のラベルマッピング
@@ -256,7 +256,7 @@ function displayActiveFilterTags(container) {
         'medical': '⚕️ 医療',
         'education': '👨‍🏫 教育',
         'manufacturing': '🏭 製造業',
-        'retail': '🛍️ 小売'
+        
     };
     
     // 国・地域タグ

@@ -1,6 +1,27 @@
 // ==================== 設定画面用 JavaScript ====================
 
 const AUTH_STORAGE_KEY = 'overseasJobAuthToken';
+const API_BASE = 'http://127.0.0.1:8000';
+
+const COUNTRY_VALUE_MAP = {
+    usa: 'アメリカ合衆国',
+    singapore: 'シンガポール',
+    uk: 'イギリス',
+    canada: 'カナダ',
+    australia: 'オーストラリア',
+    germany: 'ドイツ',
+    france: 'フランス'
+};
+
+const INDUSTRY_VALUE_MAP = {
+    it: 'IT・エンジニア',
+    finance: '金融',
+    consulting: 'コンサル',
+    marketing: 'マーケティング',
+    medical: '医療',
+    education: '教育',
+    manufacturing: '製造業'
+};
 
 // 見たいフィルター状態（複数選択）
 const viewFilters = {
@@ -26,6 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 保存された設定を読み込み
     loadSettingsFromStorage();
+
+    // バックからプロフィール情報を取得して反映
+    hydrateProfileFromServer();
     
     // イベントリスナーを設定
     setupViewFilterListeners();
@@ -47,6 +71,30 @@ function ensureLoggedIn() {
         return false;
     }
     return true;
+}
+
+// ==================== プロフィール反映 ====================
+async function hydrateProfileFromServer() {
+    const token = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!token) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/api/users/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+        const nicknameInput = document.getElementById('nickname-input');
+        if (nicknameInput && data.nickname) {
+            nicknameInput.value = data.nickname;
+        }
+    } catch (error) {
+        // 失敗時は無視（入力はユーザーが手動で行える）
+    }
 }
 
 // ==================== 見たいフィルター用イベントリスナー ====================
@@ -205,30 +253,52 @@ async function saveAndRedirect() {
     const nickname = nicknameInput ? nicknameInput.value.trim() : '';
     const token = localStorage.getItem('overseasJobAuthToken');
 
+    if (!token) {
+        alert('ログインしてください。');
+        return;
+    }
+
+    const countryRegion = COUNTRY_VALUE_MAP[postDefaults.country];
+    const industryJob = INDUSTRY_VALUE_MAP[postDefaults.industry];
+
+    if (!countryRegion || !industryJob) {
+        alert('プロフィールの「国・地域」と「業界・職種」を設定してください。');
+        return;
+    }
+
+    const payload = {
+        country_region: countryRegion,
+        industry_job: industryJob
+    };
+
     if (nickname) {
-        try {
-            const res = await fetch('http://127.0.0.1:8000/api/users/me', {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ nickname })
-            });
+        payload.nickname = nickname;
+    }
 
-            if (!res.ok) {
-                throw new Error('ニックネームの保存に失敗しました');
-            }
+    try {
+        const res = await fetch(`${API_BASE}/api/users/me`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        });
 
-            // ローカルにも保存（任意）
-            const saved = localStorage.getItem('overseasJobSettings');
-            const data = saved ? JSON.parse(saved) : {};
-            data.nickname = nickname;
-            localStorage.setItem('overseasJobSettings', JSON.stringify(data));
-        } catch (e) {
-            alert(e.message || '保存に失敗しました');
-            return;
+        if (!res.ok) {
+            throw new Error('プロフィールの保存に失敗しました');
         }
+
+        // ローカルにも保存（任意）
+        const saved = localStorage.getItem('overseasJobSettings');
+        const data = saved ? JSON.parse(saved) : {};
+        if (nickname) {
+            data.nickname = nickname;
+        }
+        localStorage.setItem('overseasJobSettings', JSON.stringify(data));
+    } catch (e) {
+        alert(e.message || '保存に失敗しました');
+        return;
     }
 
     const saveButton = document.getElementById('save-settings');
