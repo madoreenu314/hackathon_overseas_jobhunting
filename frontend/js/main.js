@@ -11,6 +11,8 @@ const API_BASE = 'http://127.0.0.1:8000';
 const AUTH_STORAGE_KEY = 'overseasJobAuthToken';
 let currentUserId = null;
 let currentUserNickname = null;
+let allPostsCache = [];
+let currentSort = 'latest';
 
 const COUNTRY_VALUE_MAP = {
     usa: 'アメリカ合衆国',
@@ -382,15 +384,39 @@ function loadPosts() {
     fetch(`${API_BASE}/api/posts`) // ←FastAPI
         .then(response => response.json())
         .then(allPosts => {
-            // フィルタリング
-            const filteredPosts = filterPosts(allPosts);
-            
-            // 表示
-            displayPosts(filteredPosts);
+            allPostsCache = Array.isArray(allPosts) ? allPosts : [];
+            applyFiltersAndSort();
         })
         .catch(error => {
             console.error('投稿読み込みエラー:', error);
         });
+}
+
+function applyFiltersAndSort() {
+    const filteredPosts = filterPosts(allPostsCache);
+    const sortedPosts = sortPosts(filteredPosts, currentSort);
+    displayPosts(sortedPosts);
+}
+
+function sortPosts(posts, sortType) {
+    const copied = posts.slice();
+    if (sortType === 'oldest') {
+        copied.sort((a, b) => getPostTime(a) - getPostTime(b));
+    } else if (sortType === 'latest') {
+        copied.sort((a, b) => getPostTime(b) - getPostTime(a));
+    } else if (sortType === 'popular') {
+        // 人気順のデータがないので新着順で代用
+        copied.sort((a, b) => getPostTime(b) - getPostTime(a));
+    }
+    return copied;
+}
+
+function getPostTime(post) {
+    if (post.created_at) {
+        const ts = Date.parse(post.created_at);
+        if (!Number.isNaN(ts)) return ts;
+    }
+    return typeof post.id === 'number' ? post.id : 0;
 }
 
 function displayPosts(posts) {
@@ -475,10 +501,8 @@ function handleSortChange(event) {
     const sortType = event.target.value;
     console.log(`🔀 ソート変更: ${sortType}`);
     
-    // 実装予定：
-    // - latest: 新着順
-    // - popular: 人気順（いいね数）
-    // - oldest: 古い順
+    currentSort = sortType;
+    applyFiltersAndSort();
 }
 
 // ==================== エクスポート（グローバル） ====================
