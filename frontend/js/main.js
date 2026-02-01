@@ -443,6 +443,9 @@ function createPostCard(post) {
     card.className = 'post-card';
     const authorName = post.author_nickname || '匿名';
     const isOwnPost = currentUserId !== null && post.author_id === currentUserId;
+    if (isOwnPost) {
+        card.classList.add('post-card-own');
+    }
     card.innerHTML = `
         <div class="post-author-name">${authorName}</div>
         <h3 class="post-title">${post.title}</h3>

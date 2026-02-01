@@ -528,6 +528,10 @@ body {
     cursor: pointer;
 }
 
+.post-card-own {
+    border-left-color: #83c12c;
+}
+
 .post-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
